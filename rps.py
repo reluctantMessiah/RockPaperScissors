@@ -1,7 +1,12 @@
 import pyglet
 from square import *
+from pyglet.window import key
 
 window = pyglet.window.Window()
+
+keys = key.KeyStateHandler()
+window.push_handlers(keys)
+
 
 class Board:
 	
@@ -16,14 +21,18 @@ class Board:
 		def draw(self):
 			self.__body.draw()
 			
+		def changeColor(self, newColorId, newColor, newHealth):
+			self.colorId = newColorId
+			self.color = newColor
+			self.health = newHealth
+			
+			self.__body.setColor(newColor)
+			
 		def receiveDamage(self, colorIdofPredator, colorOfPredator, maxHealth):
 			changedColor = False
 			self.health -= 1
 			if self.health < 0:
-				self.colorId = colorIdofPredator
-				self.color = colorOfPredator
-				self.health = maxHealth
-				self.__body.setColor(colorOfPredator)
+				self.changeColor(colorIdofPredator, colorOfPredator, maxHealth)
 				changedColor = True
 			return changedColor
 	
@@ -83,6 +92,18 @@ class Board:
 			for (j, cell) in enumerate(row):
 				self.__defend(i, j)
 				
+	def incrNumTypes(self):
+		newColor = Color(randomColor = True)
+		newColorId = self.__numCellColors
+		newHealth = self.__maxCellHealth
+		self.__colorIdToColor[newColorId] = newColor
+		self.__numCellColors += 1
+		for row in self.__cells:
+			for cell in row:
+				if random.randint(0, 100) / 100 > (1 - (1 / self.__numCellColors)):
+					cell.changeColor(newColorId, newColor, newHealth)
+		self.update()
+				
 	def __coordinatesAreOutOfBounds(self, x, y):
 		if x < 0 or x >= self.__numRows:
 			return True
@@ -109,16 +130,15 @@ class Board:
 					if changedColor:
 						return
 			
-#origin = Point(100, 100)
-#square = Square(origin, 100)
-
 board = Board(cellSize = 10, initNumCellColors = 3)
+
 
 def update(dt):
 	window.clear()
+	if keys[key.UP]:
+		board.incrNumTypes()
 	board.draw()
 	board.update()
-#	square.draw()
 	
 def main():
 	pyglet.clock.schedule_interval(update, 1/120)
