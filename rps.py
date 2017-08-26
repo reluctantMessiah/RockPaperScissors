@@ -112,9 +112,10 @@ class Board:
 		self.__numCellColors = len(self.__colorIdToColor)
 		for row in self.__cells:
 			for cell in row:
-				otherColorId = random.randint(0, self.__numCellColors - 1)
-				otherColor = self.__colorIdToColor[otherColorId]
-				cell.changeColor(otherColorId, otherColor, self.__maxCellHealth)
+				if cell.colorId == idToPop:
+					otherColorId = random.randint(0, self.__numCellColors - 1)
+					otherColor = self.__colorIdToColor[otherColorId]
+					cell.changeColor(otherColorId, otherColor, self.__maxCellHealth)
 		self.update()
 				
 	def __coordinatesAreOutOfBounds(self, x, y):
