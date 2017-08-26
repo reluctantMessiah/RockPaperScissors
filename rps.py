@@ -36,9 +36,9 @@ class Board:
 				changedColor = True
 			return changedColor
 	
-	def __init__(self, cellSize = 10, initNumCellColors = 3):
+	def __init__(self, cellSize = 10, initNumCellColors = 3, maxCellHealth = 4):
 		
-		self.__maxCellHealth = 10
+		self.__maxCellHealth = maxCellHealth
 		
 		self.__cellSize = cellSize
 		self.__numCellColors = initNumCellColors
@@ -144,7 +144,7 @@ class Board:
 					if changedColor:
 						return
 			
-board = Board(cellSize = 10, initNumCellColors = 3)
+board = Board(cellSize = 12, initNumCellColors = 3, maxCellHealth = 3)
 
 
 def update(dt):
