@@ -103,6 +103,19 @@ class Board:
 				if random.randint(0, 100) / 100 > (1 - (1 / self.__numCellColors)):
 					cell.changeColor(newColorId, newColor, newHealth)
 		self.update()
+		
+	def decrNumTypes(self):
+		if self.__numCellColors == 2:
+			return
+		idToPop = len(self.__colorIdToColor) - 1
+		self.__colorIdToColor.pop(idToPop)
+		self.__numCellColors = len(self.__colorIdToColor)
+		for row in self.__cells:
+			for cell in row:
+				otherColorId = random.randint(0, self.__numCellColors - 1)
+				otherColor = self.__colorIdToColor[otherColorId]
+				cell.changeColor(otherColorId, otherColor, self.__maxCellHealth)
+		self.update()
 				
 	def __coordinatesAreOutOfBounds(self, x, y):
 		if x < 0 or x >= self.__numRows:
@@ -137,6 +150,8 @@ def update(dt):
 	window.clear()
 	if keys[key.UP]:
 		board.incrNumTypes()
+	elif keys[key.DOWN]:
+		board.decrNumTypes()
 	board.draw()
 	board.update()
 	
