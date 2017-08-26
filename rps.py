@@ -6,36 +6,53 @@ window = pyglet.window.Window()
 class Board:
 	
 	class Cell:
-		def __init__(self, maxCellHealth, origin, size, color = Color(randomColor = True)):
-			self.colorId = -1
+		def __init__(self, maxCellHealth, origin, size, colorId, color):
+			self.colorId = colorId
+			self.color = color
 			self.health = maxCellHealth
 			
 			self.__body = Square(origin, size, color)
 			
 		def draw(self):
 			self.__body.draw()
+			
+		def receiveDamage(self, colorIdofPredator, colorOfPredator, maxHealth):
+			changedColor = False
+			self.health -= 1
+			if self.health < 0:
+				self.colorId = colorIdofPredator
+				self.color = colorOfPredator
+				self.health = maxHealth
+				self.__body.setColor(colorOfPredator)
+				changedColor = True
+			return changedColor
 	
-	def __init__(self, cellSize = 5, initNumCellColors = 3):
+	def __init__(self, cellSize = 10, initNumCellColors = 3):
 		
 		self.__maxCellHealth = 10
 		
 		self.__cellSize = cellSize
+		self.__numCellColors = initNumCellColors
 		self.__initNumCellColors = initNumCellColors
 		
-		self.generation = 0
+		self.__generation = 0
 		
 		self.__numRows = window.height // cellSize
 		self.__numCols = window.width // cellSize
 		
-		self.__colorIdToColor = {-1 : Color(255, 255, 255)}
+		self.__colorIdToColor = {}
 		
 		for i in range(initNumCellColors):
 			self.__colorIdToColor[i] = Color(randomColor = True)
 			
 		self.__cells = []
 		
-		self.__initBoard()
+		self.__initBoard()	
 		self.draw()
+		
+		self.__neighborCoordinates = [(-1, -1), (0, -1), (1, -1),
+																	(-1,  0),      	 	 (1,  0),
+																	(-1,  1), (0,  1), (1,  1)]
 		
 	def __initBoard(self):
 		x = 0
@@ -44,7 +61,9 @@ class Board:
 		for i in range(self.__numRows):
 			newRow = []
 			for j in range(self.__numCols):
-				newCell = self.Cell(self.__maxCellHealth, origin, self.__cellSize)
+				randomColorId = random.randint(0, self.__initNumCellColors - 1)
+				newCell = self.Cell(self.__maxCellHealth, origin, self.__cellSize, 
+					colorId = randomColorId, color = self.__colorIdToColor[randomColorId])
 				newRow.append(newCell)
 				x += self.__cellSize
 				origin = Point(x, y)
@@ -57,15 +76,48 @@ class Board:
 		for row in self.__cells:
 			for cell in row:
 				cell.draw()
+				
+	def update(self):
+		self.__generation += 1
+		for (i, row) in enumerate(self.__cells):
+			for (j, cell) in enumerate(row):
+				self.__defend(i, j)
+				
+	def __coordinatesAreOutOfBounds(self, x, y):
+		if x < 0 or x >= self.__numRows:
+			return True
+		elif y < 0 or y >= self.__numCols:
+			return True
+		else:
+			return False
+				
+	def __defend(self, i, j):
+		# Idea: change rules of predation, e.g., a cell can be eaten not just by the
+		# cells of color ids one above itself, but also by cells of colors ids which
+		# it divides into, or whatever.
+		colorIdOfPredator = (self.__cells[i][j].colorId + 1) % self.__numCellColors
+		
+		for neighborCoordinates in self.__neighborCoordinates:
+			x = i + neighborCoordinates[0]
+			y = j + neighborCoordinates[1]
+			if not self.__coordinatesAreOutOfBounds(x, y):
+				neighbor = self.__cells[x][y]
+				if neighbor.colorId == colorIdOfPredator:
+					colorOfPredator = self.__colorIdToColor[colorIdOfPredator]
+					changedColor = self.__cells[i][j].receiveDamage(colorIdOfPredator, 
+						colorOfPredator, self.__maxCellHealth)
+					if changedColor:
+						return
 			
 #origin = Point(100, 100)
 #square = Square(origin, 100)
 
-board = Board()
+board = Board(cellSize = 10, initNumCellColors = 3)
 
 def update(dt):
 	window.clear()
 	board.draw()
+	board.update()
 #	square.draw()
 	
 def main():

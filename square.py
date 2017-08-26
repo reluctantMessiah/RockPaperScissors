@@ -32,7 +32,7 @@ class Square:
 
 		self.__updateBodyAttributes()
 		
-	def setColor(color):
+	def setColor(self, color):
 		self.__color = color
 		self.__updateBodyAttributes()
 		
