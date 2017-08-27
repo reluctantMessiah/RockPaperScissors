@@ -59,9 +59,13 @@ class Board:
 		self.__initBoard()	
 		self.draw()
 		
-		self.__neighborCoordinates = [(-1, -1), (0, -1), (1, -1),
-																	(-1,  0),      	 	 (1,  0),
-																	(-1,  1), (0,  1), (1,  1)]
+		self.__neighborCoordinates = [(-2, -2), (-1, -2), (0, -2), (1, -2), (2, -2),
+																	(-2, -1),	(-1, -1), (0, -1), (1, -1), (2, -1),
+																	(-2,  0), (-1,  0),      	 	 (1,  0), (2,  0),
+																	(-2,  1), (-1,  1), (0,  1), (1,  1), (2,  1),
+																	(-2,  2), (-1,  2), (0,  2), (1,  2), (2,  2)]
+																	
+
 		
 	def __initBoard(self):
 		x = 0
@@ -144,7 +148,7 @@ class Board:
 					if changedColor:
 						return
 			
-board = Board(cellSize = 12, initNumCellColors = 3, maxCellHealth = 3)
+board = Board(cellSize = 12, initNumCellColors = 3, maxCellHealth = 15)
 
 
 def update(dt):
