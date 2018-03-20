@@ -5,12 +5,6 @@ In the Rock, Paper, Scissors cellular automata, there are some number of colors,
 
 <img src="rps1.gif"/>
 
-<img src="rps2.gif"/>
-
-<img src="rps3.gif"/>
-
-<img src="rps4.gif"/>
-
 ## To Run:
 1. `pip install pyglet`
 2. `python rps.py`
