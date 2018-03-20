@@ -3,7 +3,13 @@ This program is the Rock, Paper, Scissors cellular automata, written in Python.
 
 In the Rock, Paper, Scissors cellular automata, there are some number of colors, let's say three: Red, Green, Blue. Each color "eats" one other color. So perhaps Red eats Green, who eats Blue, who eats Red. When a color is eaten, it becomes the color of its predator. The result is a nice swirly pattern, like a lava lamp.
 
-<img src="https://i.imgur.com/pZx0QpV.gif"/>
+<img src="rps1.gif"/>
+
+<img src="rps2.gif"/>
+
+<img src="rps3.gif"/>
+
+<img src="rps4.gif"/>
 
 ## To Run:
 1. `pip install pyglet`
